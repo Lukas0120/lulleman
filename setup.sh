@@ -14,7 +14,7 @@ echo "
 # Configuring Best Mirrors & Setting up repos
 ###############################################################################
 "
-sudo pacman -S reflector rsync
+sudo pacman -S reflector rsync --noconfirm
 
 sudo reflector -a 48 -c SE -f 5 -l 20 --sort rate --save /etc/pacman.d/mirrorlist
 
@@ -29,10 +29,6 @@ echo "
 PKGS=(
 'imagemagick'
 'w3m'
-'rxvt-unicode-truecolor-wide-glyphs'
-'nm-connection-editor'
-'networkmanager'
-'grub-customizer'
 'gparted'
 'lzop'
 'lz4'
@@ -40,15 +36,29 @@ PKGS=(
 'cpio'
 'unzip'
 'p7zip'
-'geany'
-'geany-plugins'
-'qogir-icon-theme'
 'neofetch'
-'firefox'
-'kitty'
 'linux-tools'
 'yay'
 'paru'
+'bc'
+'bison'
+'flex'
+'ccache'
+'cmake'
+'extra-cmake-modules'
+'ninja'
+'meson'
+'musl'
+'mesa-tkg-git'
+'boost'
+'boost-libs'
+'gperftools'
+'python-setuptools'
+'git'
+'wget'
+'curl'
+'zsh'
+'zsh-completions'
 
 )
 
@@ -60,8 +70,9 @@ done
 
 mkdir ~/clang
 cd ~/clang
-wget https://github.com/Mandi-Sa/clang/releases/download/amd64-full-toolchain-20/llvm20.0.0-binutils2.42_amd64-full-toolchain-20241001.7z
-7z x amd64-full-toolchain*
+wget https://github.com/Mandi-Sa/clang/releases/download/amd64-full-toolchain-21/llvm21.0.0-binutils2.44_amd64-full-toolchain-20250702.7z
+7z x *llvm*
+rm llvm21*
 
 echo "
 ###############################################################################
@@ -70,18 +81,26 @@ echo "
 "
 sleep 2
 
-cd ~/lulleman/cachyos-repo/
-sudo ./cachyos-repo.sh
-
 sudo bash -c 'cat << EOF >> /etc/pacman.conf
 [chaotic-aur]
 Server = https://random-mirror.chaotic.cx/\$repo/\$arch
 SigLevel = Never
-#wailord284 custom repo with many aur packages used by Alex's Arch Linux Installer
 [aurmageddon]
 Server = https://wailord284.club/repo/\$repo/\$arch
 SigLevel = Never
 EOF'
+
+sudo pacman -Sy
+sudo pacman -S chaotic-mirrorlist --noconfirm
+
+cd /home/lulle/lulleman/home/
+cp -rf . /home/lulle/
+cd /home/lulle/lulleman/etc
+sudo cp -rf * /etc/
+cd /home/lulle/lulleman/share
+sudo cp -rf fonts /usr/share/
+
+sudo sed "s,\#\ %wheel ALL=(ALL:ALL) ALL,%wheel ALL=(ALL:ALL) ALL,g" -i /etc/sudoers
 
 
 xrdb ~/.Xresources
